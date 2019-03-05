@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5053007875468681027}
   - component: {fileID: 2958941196781247044}
   - component: {fileID: 6400623660596477136}
+  - component: {fileID: 1764266083}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -91,6 +92,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1764266083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229786949897329294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b862bd7d4c00ae24fb084b647b3bc059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxDistance: 0.25
+  noiseFrequency: 0.25
+  noiseSpeed: 0.5
+  directionLerpSpeed: 0.2
 --- !u!1 &4214494682750728202
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +233,7 @@ MonoBehaviour:
   self: {fileID: 5683830438611072791}
   body: {fileID: 3172156245104839711}
   state: 0
-  fallSpeed: 5
+  color: 0
+  fallSpeed: 2
   swipeSpeed: 20
   swipeDuration: 0.15

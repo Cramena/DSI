@@ -129,5 +129,6 @@ public class BallCollide : MonoBehaviour
 		{
 			state = BallState.Falling;
 		}
+
 	}
 }
