@@ -8,9 +8,11 @@ public class BallNoiseMove : MonoBehaviour
 	//Rigidbody body;
 	public float maxDistance = 0.25f;
 	public float noiseFrequency = 0.25f;
+	public float noiseFrequencyRange = 0.1f;
 	public float noiseSpeed = 1;
 	public float directionLerpSpeed = 0.1f;
 	float noiseTimer;
+	float currentNoiseFrequency;
 	Vector3 lastDirection;
 	Vector3 targetDirection;
 	Vector3 noiseDirection;
@@ -28,7 +30,8 @@ public class BallNoiseMove : MonoBehaviour
 		}
 		else
 		{
-			noiseTimer = noiseFrequency;
+			noiseTimer = noiseFrequency + Random.Range(-noiseFrequencyRange, noiseFrequencyRange);
+			currentNoiseFrequency = noiseTimer;
 			NoiseMove();
 		}
 
@@ -58,7 +61,7 @@ public class BallNoiseMove : MonoBehaviour
 
 	void UpdateDirection()
 	{
-		noiseDirection = Vector3.Lerp(lastDirection, targetDirection, directionLerpSpeed * noiseFrequency);
+		noiseDirection = Vector3.Lerp(lastDirection, targetDirection, directionLerpSpeed * currentNoiseFrequency);
 	}
 
 	void Move()

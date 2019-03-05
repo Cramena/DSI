@@ -28,6 +28,6 @@ public class BallsManager : MonoBehaviour
 
 		Vector3 spawnPosition = new Vector3(randomSpawnX, 6, 0);
 		BallCollide ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity).GetComponent<BallCollide>();
-		ball.color = (BallColor)randomColor;
+		ball.size = (BallSize)randomColor;
 	}
 }

@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 4214494682750728203}
   m_Layer: 0
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -233,7 +233,7 @@ MonoBehaviour:
   self: {fileID: 5683830438611072791}
   body: {fileID: 3172156245104839711}
   state: 0
-  color: 0
+  size: 0
   fallSpeed: 2
   swipeSpeed: 20
   swipeDuration: 0.15

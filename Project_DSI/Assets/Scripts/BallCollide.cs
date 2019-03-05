@@ -16,11 +16,11 @@ public enum BallState
 	Swiping
 }
 
-public enum BallColor
+public enum BallSize
 {
-	Red,
-	Green,
-	Yellow
+	Small,
+	Medium,
+	Big
 }
 
 public class BallCollide : MonoBehaviour
@@ -30,7 +30,7 @@ public class BallCollide : MonoBehaviour
 
 	//public Direction direction;
 	public BallState state;
-	public BallColor color;
+	public BallSize size;
 
 	//public Material
 
@@ -46,7 +46,19 @@ public class BallCollide : MonoBehaviour
     void Start()
     {
 		PlayerController.instance.SwipeEnd += StartSwipe;
-    }
+		switch (size)
+		{
+			case BallSize.Small:
+				self.GetChild(0).localScale = new Vector3(.5f, .5f, .5f);
+				break;
+			case BallSize.Medium:
+				self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
+				break;
+			case BallSize.Big:
+				self.GetChild(0).localScale = Vector3.one;
+				break;
+		}
+	}
 
     // Update is called once per frame
     void Update()
@@ -80,26 +92,6 @@ public class BallCollide : MonoBehaviour
 		body.velocity = dirVector * swipeSpeed;
 	}
 
-	//void GetInput()
-	//{
-	//	if (Input.GetKeyDown(KeyCode.LeftArrow))
-	//	{
-	//		StartSwipe(Direction.Left);
-	//	}
-	//	if (Input.GetKeyDown(KeyCode.RightArrow))
-	//	{
-	//		StartSwipe(Direction.Right);
-	//	}
-	//	if (Input.GetKeyDown(KeyCode.UpArrow))
-	//	{
-	//		StartSwipe(Direction.Up);
-	//	}
-	//	if (Input.GetKeyDown(KeyCode.DownArrow))
-	//	{
-	//		StartSwipe(Direction.Down);
-	//	}
-	//}
-
 	void StartSwipe(Direction _direction)
 	{
 		state = BallState.Swiping;
@@ -128,6 +120,27 @@ public class BallCollide : MonoBehaviour
 		if (state == BallState.Swiping)
 		{
 			state = BallState.Falling;
+		}
+		if (collision.gameObject.CompareTag("Ball"))
+		{
+			BallCollide ball = collision.gameObject.GetComponent<BallCollide>();
+			if (state == BallState.Falling && ball.size == size)
+			{
+				switch (size)
+				{
+					case BallSize.Small:
+						size = BallSize.Medium;
+						self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
+						break;
+					case BallSize.Medium:
+						size = BallSize.Big;
+						self.GetChild(0).localScale = Vector3.one;
+						break;
+					case BallSize.Big:
+						Destroy(gameObject);
+						break;
+				}
+			}
 		}
 
 	}
