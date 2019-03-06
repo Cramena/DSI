@@ -13,6 +13,10 @@ public class PlayerController : MonoBehaviour
 	public delegate void SwipeEvent(Direction dir);
 	public SwipeEvent SwipeEnd;
 
+	Vector3 swipePosBegin;
+	Vector3 swipePosEnd;
+	Vector3 swipeDir;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -36,11 +40,48 @@ public class PlayerController : MonoBehaviour
 
 	void GetInput()
 	{
-		if (Input.GetKeyDown(KeyCode.LeftArrow))
+
+		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+		{
+			swipePosBegin = Input.mousePosition;
+		}
+		if (Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetTouch(0).phase == TouchPhase.Canceled)) 
+		{
+			swipePosEnd = Input.mousePosition;
+			swipeDir = (swipePosEnd - swipePosBegin);
+			if (Mathf.Abs(swipeDir.x) > Mathf.Abs(swipeDir.y))
+			{
+				if (swipeDir.x > 0)
+				{
+					direction = Direction.Right;
+					SwipeEnd(direction);
+				}
+				else
+				{
+					direction = Direction.Left;
+					SwipeEnd(direction);
+				}
+			}
+			else if (Mathf.Abs(swipeDir.y) > Mathf.Abs(swipeDir.x))
+			{
+				if (swipeDir.y > 0)
+				{
+					direction = Direction.Up;
+					SwipeEnd(direction);
+				}
+				else
+				{
+					direction = Direction.Down;
+					SwipeEnd(direction);
+				}
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.LeftArrow) )
 		{
 			//StartSwipe(Direction.Left);
 			direction = Direction.Left;
-			if (SwipeEnd != null) SwipeEnd(direction);
+			SwipeEnd(direction);
 		}
 		if (Input.GetKeyDown(KeyCode.RightArrow))
 		{

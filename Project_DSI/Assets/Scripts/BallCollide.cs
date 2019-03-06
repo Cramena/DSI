@@ -28,6 +28,7 @@ public class BallCollide : MonoBehaviour
 {
 	public Transform self;
 	public Rigidbody body;
+	Collider col;
 
 	//public Direction direction;
 	public BallState state;
@@ -48,6 +49,7 @@ public class BallCollide : MonoBehaviour
     {
 		PlayerController.instance.SwipeEnd += StartSwipe;
 		ModifySize(size);
+		col = GetComponent<Collider>();
 		//switch (size)
 		//{
 		//	case BallSize.Small:
@@ -85,8 +87,11 @@ public class BallCollide : MonoBehaviour
 			default:
 				break;
 		}
-		
-    }
+
+		//ClampToTop();
+
+
+	}
 
 	void Fall()
 	{
@@ -121,34 +126,38 @@ public class BallCollide : MonoBehaviour
 		}
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	private void OnCollisionStay(Collision collision)
 	{
-		if (state == BallState.Swiping)
-		{
-			state = BallState.Falling;
-		}
+		if (state != BallState.Swiping) return;
 		if (collision.gameObject.CompareTag("Ball"))
 		{
 			BallCollide ball = collision.gameObject.GetComponent<BallCollide>();
-			if (state == BallState.Falling && ball.size == size)
+			if (ball.size == size)
 			{
-				switch (size)
-				{
-					case BallSize.Small:
-						ModifySize(BallSize.Medium);
-						//size = BallSize.Medium;
-						//self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
-						break;
-					case BallSize.Medium:
-						ModifySize(BallSize.Big);
-						//size = BallSize.Big;
-						//self.GetChild(0).localScale = Vector3.one;
-						break;
-					case BallSize.Big:
-						Destroy(gameObject);
-						break;
-				}
+				MergeManager.instance.GetBallCollision(this, ball);
+				//switch (size)
+				//{
+				//	case BallSize.Small:
+				//		MergeManager.instance.GetBallCollision(this, ball);
+				//		//ModifySize(BallSize.Medium);
+				//		//size = BallSize.Medium;
+				//		//self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
+				//		break;
+				//	case BallSize.Medium:
+				//		MergeManager.instance.GetBallCollision(this, ball);
+				//		//ModifySize(BallSize.Big);
+				//		//size = BallSize.Big;
+				//		//self.GetChild(0).localScale = Vector3.one;
+				//		break;
+				//	case BallSize.Big:
+				//		Destroy(gameObject);
+				//		break;
+				//}
 			}
+		}
+		else if (state == BallState.Swiping)
+		{
+			state = BallState.Falling;
 		}
 
 	}
@@ -159,14 +168,26 @@ public class BallCollide : MonoBehaviour
 		switch (size)
 		{
 			case BallSize.Small:
-				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
+				self.localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
 				break;
 			case BallSize.Medium:
-				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
+				self.localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
 				break;
 			case BallSize.Big:
-				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
+				self.localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
 				break;
 		}
+	}
+
+	public void Ghost()
+	{
+		body.isKinematic = true;
+		col.enabled = false;
+	}
+
+	public void UnGhost()
+	{
+		body.isKinematic = false;
+		col.enabled = true;
 	}
 }
