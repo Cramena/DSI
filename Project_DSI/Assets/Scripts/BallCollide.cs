@@ -85,8 +85,11 @@ public class BallCollide : MonoBehaviour
 			default:
 				break;
 		}
-		
-    }
+
+		//ClampToTop();
+
+
+	}
 
 	void Fall()
 	{
@@ -121,12 +124,21 @@ public class BallCollide : MonoBehaviour
 		}
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	void ClampToTop()
 	{
+		if (self.position.y > 5)
+		{
+			self.position = new Vector3(self.position.x, 5, self.position.z);
+		}
+	}
+
+	private void OnCollisionStay(Collision collision)
+	{
+		if (state != BallState.Swiping) return;
 		if (collision.gameObject.CompareTag("Ball"))
 		{
 			BallCollide ball = collision.gameObject.GetComponent<BallCollide>();
-			if (state == BallState.Falling && ball.size == size)
+			if (ball.size == size)
 			{
 				switch (size)
 				{
@@ -161,13 +173,13 @@ public class BallCollide : MonoBehaviour
 		switch (size)
 		{
 			case BallSize.Small:
-				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
+				self.localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
 				break;
 			case BallSize.Medium:
-				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
+				self.localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
 				break;
 			case BallSize.Big:
-				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
+				self.localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
 				break;
 		}
 	}

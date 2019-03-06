@@ -11,12 +11,7 @@ public class BallsManager : MonoBehaviour
     {
 		PlayerController.instance.SwipeEnd += SpawnBall;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	
 
 	void SpawnBall(Direction dir)
 	{
@@ -28,6 +23,7 @@ public class BallsManager : MonoBehaviour
 
 		Vector3 spawnPosition = new Vector3(randomSpawnX, 6, 0);
 		BallCollide ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity).GetComponent<BallCollide>();
-		ball.size = (BallSize)randomColor;
+		ball.size = BallSize.Small;
+		//ball.size = (BallSize)randomColor;
 	}
 }
