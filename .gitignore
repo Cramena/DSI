@@ -54,3 +54,5 @@ crashlytics-build.properties
 Project_DSI/Library/
 
 *.cache
+
+Project_DSI/Assets/Scenes/TestScenes/DylanTest\.unity\.meta
