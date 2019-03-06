@@ -123,10 +123,6 @@ public class BallCollide : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (state == BallState.Swiping)
-		{
-			state = BallState.Falling;
-		}
 		if (collision.gameObject.CompareTag("Ball"))
 		{
 			BallCollide ball = collision.gameObject.GetComponent<BallCollide>();
@@ -135,11 +131,13 @@ public class BallCollide : MonoBehaviour
 				switch (size)
 				{
 					case BallSize.Small:
+						//MergeManager.instance.GetBallCollision(this, ball);
 						ModifySize(BallSize.Medium);
 						//size = BallSize.Medium;
 						//self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
 						break;
 					case BallSize.Medium:
+						//MergeManager.instance.GetBallCollision(this, ball);
 						ModifySize(BallSize.Big);
 						//size = BallSize.Big;
 						//self.GetChild(0).localScale = Vector3.one;
@@ -149,6 +147,10 @@ public class BallCollide : MonoBehaviour
 						break;
 				}
 			}
+		}
+		else if (state == BallState.Swiping)
+		{
+			state = BallState.Falling;
 		}
 
 	}

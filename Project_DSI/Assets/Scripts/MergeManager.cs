@@ -7,7 +7,7 @@ public class MergeManager : MonoBehaviour
 	public static MergeManager instance;
 
 	public List<BallCollide> ballsColliding = new List<BallCollide>();
-	public List<List<BallCollide>> ballsCollisions = new List<List<BallCollide>>();
+	public List<BallCollide[]> ballsCollisions = new List<BallCollide[]>();
 
 	public float mergeEndDistance = 0.1f;
 	[Range(0, 1)] public float mergeSpeed = 0.2f;
@@ -35,6 +35,7 @@ public class MergeManager : MonoBehaviour
 
 	public void GetBallCollision(BallCollide firstBall, BallCollide secondBall)
 	{
+		print("Get ball collision");
 		if (!ballsColliding.Contains(firstBall) || !ballsColliding.Contains(secondBall))
 		{
 			if (DirectionCorrect(PlayerController.instance.direction, firstBall.self, secondBall.self))
@@ -47,20 +48,24 @@ public class MergeManager : MonoBehaviour
 
 	void AddBallsCollision(BallCollide firstBall, BallCollide secondBall)
 	{
+		print("AddBallsCollision");
 		if (!ballsColliding.Contains(firstBall)) ballsColliding.Add(firstBall);
 		if (!ballsColliding.Contains(secondBall)) ballsColliding.Add(secondBall);
+		ballsCollisions.Add(new BallCollide[] { firstBall, secondBall });
 	}
 
 	void ProcessCollisions()
 	{
+		print("ProcessCollisions");
 		for (int i = 0; i < ballsCollisions.Count; i++)
 		{
 			CheckMergeDirection(ballsCollisions[i]);
 		}
 	}
 
-	void CheckMergeDirection(List<BallCollide> _balls)
+	void CheckMergeDirection(BallCollide[] _balls)
 	{
+		print("CheckMergeDirection");
 		if (DirectionCorrect(PlayerController.instance.direction, _balls[0].self, _balls[1].self))
 		{
 			StartCoroutine(DoMerge(_balls[0], _balls[1]));
@@ -73,16 +78,29 @@ public class MergeManager : MonoBehaviour
 
 	IEnumerator DoMerge(BallCollide firstBall, BallCollide secondBall)
 	{
+		print("DoMerge");
+		firstBall.state = BallState.Merging;
+		secondBall.state = BallState.Merging;
+		firstBall.body.isKinematic = true;
+		secondBall.body.isKinematic = true;
 		Vector3 secondInitPos = secondBall.self.position;
+		float counter = 0;
 		while(Vector3.Distance(firstBall.self.position, secondBall.self.position) > mergeEndDistance)
 		{
-			secondBall.self.position = Vector3.Lerp(secondInitPos, firstBall.self.position, mergeSpeed);
-			yield return null;
+			secondBall.self.position = Vector3.Lerp(secondBall.self.position, firstBall.self.position, mergeSpeed);
+			yield return new WaitForFixedUpdate();
+			//counter += mergeSpeed * Time.fixedDeltaTime;
+			print("Merging");
 		}
 		Destroy(secondBall.gameObject);
 		firstBall.ModifySize((BallSize)((int)firstBall.size + 1));
 		ballsColliding.Remove(secondBall);
 		ballsColliding.Remove(firstBall);
+		firstBall.state = BallState.Falling;
+		secondBall.state = BallState.Falling;
+		firstBall.body.isKinematic = false;
+		secondBall.body.isKinematic = false;
+		print("Merge DONE");
 	}
 
 	bool DirectionCorrect(Direction _dir, Transform firstTransform, Transform secondTransform)
