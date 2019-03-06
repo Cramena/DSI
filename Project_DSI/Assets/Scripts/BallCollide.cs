@@ -13,7 +13,8 @@ public enum Direction
 public enum BallState
 {
 	Falling,
-	Swiping
+	Swiping,
+	Merging
 }
 
 public enum BallSize
@@ -46,18 +47,19 @@ public class BallCollide : MonoBehaviour
     void Start()
     {
 		PlayerController.instance.SwipeEnd += StartSwipe;
-		switch (size)
-		{
-			case BallSize.Small:
-				self.GetChild(0).localScale = new Vector3(.5f, .5f, .5f);
-				break;
-			case BallSize.Medium:
-				self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
-				break;
-			case BallSize.Big:
-				self.GetChild(0).localScale = Vector3.one;
-				break;
-		}
+		ModifySize(size);
+		//switch (size)
+		//{
+		//	case BallSize.Small:
+		//		self.GetChild(0).localScale = new Vector3(.5f, .5f, .5f);
+		//		break;
+		//	case BallSize.Medium:
+		//		self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
+		//		break;
+		//	case BallSize.Big:
+		//		self.GetChild(0).localScale = Vector3.one;
+		//		break;
+		//}
 	}
 
     // Update is called once per frame
@@ -67,19 +69,23 @@ public class BallCollide : MonoBehaviour
 		{
 			swipeTimer -= Time.deltaTime;
 		}
-		else
+		else if (state == BallState.Swiping)
 		{
 			state = BallState.Falling;
 		}
 
-        if (state == BallState.Falling)
+		switch (state)
 		{
-			Fall();
+			case BallState.Falling:
+				Fall();
+				break;
+			case BallState.Swiping:
+				Swipe();
+				break;
+			default:
+				break;
 		}
-		else
-		{
-			Swipe();
-		}
+		
     }
 
 	void Fall()
@@ -129,12 +135,14 @@ public class BallCollide : MonoBehaviour
 				switch (size)
 				{
 					case BallSize.Small:
-						size = BallSize.Medium;
-						self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
+						ModifySize(BallSize.Medium);
+						//size = BallSize.Medium;
+						//self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
 						break;
 					case BallSize.Medium:
-						size = BallSize.Big;
-						self.GetChild(0).localScale = Vector3.one;
+						ModifySize(BallSize.Big);
+						//size = BallSize.Big;
+						//self.GetChild(0).localScale = Vector3.one;
 						break;
 					case BallSize.Big:
 						Destroy(gameObject);
@@ -143,5 +151,22 @@ public class BallCollide : MonoBehaviour
 			}
 		}
 
+	}
+
+	public void ModifySize(BallSize _newSize)
+	{
+		size = _newSize;
+		switch (size)
+		{
+			case BallSize.Small:
+				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
+				break;
+			case BallSize.Medium:
+				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
+				break;
+			case BallSize.Big:
+				self.GetChild(0).localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
+				break;
+		}
 	}
 }
