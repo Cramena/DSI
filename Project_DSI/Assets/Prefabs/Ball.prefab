@@ -369,6 +369,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  explosionParticle: {fileID: 5817274244306972308, guid: 9a4c153083077b249981570e6265fe3c,
+    type: 3}
 --- !u!135 &29
 SphereCollider:
   m_ObjectHideFlags: 0

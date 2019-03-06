@@ -113,7 +113,7 @@ public class MergeManager : MonoBehaviour
 			Destroy(secondBall.gameObject);
 			if (firstBall.size == BallSize.Big)
 			{
-				Destroy(firstBall.gameObject);
+				firstBall.Die();
 			}
 			else
 			{
