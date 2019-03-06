@@ -105,11 +105,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b862bd7d4c00ae24fb084b647b3bc059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 0.25
+  maxDistance: 0.35
   noiseFrequency: 0.25
   noiseFrequencyRange: 0.1
-  noiseSpeed: 0.5
-  directionLerpSpeed: 0.2
+  noiseSpeed: 1
+  directionLerpSpeed: 0.1
 --- !u!96 &6877549359086698994
 TrailRenderer:
   serializedVersion: 2
@@ -341,5 +341,5 @@ MonoBehaviour:
   state: 0
   size: 0
   fallSpeed: 0.2
-  swipeSpeed: 5
+  swipeSpeed: 10
   swipeDuration: 0.15
