@@ -44,6 +44,8 @@ public class BallCollide : MonoBehaviour
 	public float swipeDuration = 0.5f;
 	private float swipeTimer;
 
+	public AnimationCurve speedCurve;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -70,6 +72,8 @@ public class BallCollide : MonoBehaviour
 		if (swipeTimer > 0)
 		{
 			swipeTimer -= Time.deltaTime;
+			body.velocity = dirVector * swipeSpeed * speedCurve.Evaluate(swipeTimer/swipeDuration);
+			print(body.velocity.magnitude);
 		}
 		else if (state == BallState.Swiping)
 		{
@@ -95,12 +99,13 @@ public class BallCollide : MonoBehaviour
 
 	void Fall()
 	{
+		if (body.isKinematic) body.isKinematic = false;
 		body.velocity = new Vector3(0, -fallSpeed, 0);
 	}
 
 	void Swipe()
 	{
-		body.velocity = dirVector * swipeSpeed;
+		//body.velocity = dirVector * swipeSpeed;
 	}
 
 	void StartSwipe(Direction _direction)
@@ -155,10 +160,10 @@ public class BallCollide : MonoBehaviour
 				//}
 			}
 		}
-		else if (state == BallState.Swiping)
-		{
-			state = BallState.Falling;
-		}
+		//else if (state == BallState.Swiping)
+		//{
+		//	state = BallState.Falling;
+		//}
 
 	}
 

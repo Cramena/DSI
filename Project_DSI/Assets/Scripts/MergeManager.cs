@@ -35,7 +35,7 @@ public class MergeManager : MonoBehaviour
 
 	public void GetBallCollision(BallCollide firstBall, BallCollide secondBall)
 	{
-		print("Get ball collision");
+		//print("Get ball collision");
 		//if (!ballsColliding.Contains(firstBall) || !ballsColliding.Contains(secondBall))
 		//{
 			if (DirectionCorrect(PlayerController.instance.direction, firstBall.self, secondBall.self))
@@ -49,7 +49,7 @@ public class MergeManager : MonoBehaviour
 
 	void AddBallsCollision(BallCollide firstBall, BallCollide secondBall)
 	{
-		print("AddBallsCollision");
+		//print("AddBallsCollision");
 		//if (!ballsColliding.Contains(firstBall)) ballsColliding.Add(firstBall);
 		//if (!ballsColliding.Contains(secondBall)) ballsColliding.Add(secondBall);
 		ballsCollisions.Add(new BallCollide[] { firstBall, secondBall });
@@ -57,7 +57,7 @@ public class MergeManager : MonoBehaviour
 
 	void ProcessCollisions()
 	{
-		print("ProcessCollisions");
+		//print("ProcessCollisions");
 		for (int i = 0; i < ballsCollisions.Count; i++)
 		{
 			//CheckMergeDirection(ballsCollisions[i]);
@@ -67,7 +67,7 @@ public class MergeManager : MonoBehaviour
 
 	void CheckMergeDirection(/*BallCollide[] _balls*/  BallCollide first, BallCollide second)
 	{
-		print("CheckMergeDirection");
+		//print("CheckMergeDirection");
 		if (DirectionCorrect(PlayerController.instance.direction, first.self, second.self))
 		{
 			StartCoroutine(DoMerge(first, second));
@@ -80,7 +80,7 @@ public class MergeManager : MonoBehaviour
 
 	IEnumerator DoMerge(BallCollide firstBall, BallCollide secondBall)
 	{
-		print("DoMerge");
+		//print("DoMerge");
 		firstBall.state = BallState.Merging;
 		secondBall.state = BallState.Merging;
 		firstBall.Ghost();
@@ -92,25 +92,42 @@ public class MergeManager : MonoBehaviour
 			secondBall.self.position = Vector3.Lerp(secondBall.self.position, firstBall.self.position, mergeSpeed);
 			yield return new WaitForFixedUpdate();
 			//counter += mergeSpeed * Time.fixedDeltaTime;
-			print("Merging");
+			//print("Merging");
+			if (firstBall == null || secondBall == null)
+			{
+				if (firstBall != null)
+				{
+					firstBall.UnGhost();
+					firstBall.state = BallState.Falling;
+				}
+				else if(secondBall != null)
+				{
+					secondBall.UnGhost();
+					secondBall.state = BallState.Falling;
+				}
+				break;
+			}
 		}
-		Destroy(secondBall.gameObject);
-		if (firstBall.size == BallSize.Big)
+		if (firstBall != null && secondBall != null)
 		{
-			Destroy(firstBall.gameObject);
+			Destroy(secondBall.gameObject);
+			if (firstBall.size == BallSize.Big)
+			{
+				Destroy(firstBall.gameObject);
+			}
+			else
+			{
+				firstBall.ModifySize((BallSize)((int)firstBall.size + 1));
+				//ballsColliding.Remove(secondBall);
+				//ballsColliding.Remove(firstBall);
+				ballsCollisions.Clear();
+				firstBall.UnGhost();
+				secondBall.UnGhost();
+				firstBall.state = BallState.Falling;
+				secondBall.state = BallState.Falling;
+			}
+			//print("Merge DONE");
 		}
-		else
-		{
-			firstBall.ModifySize((BallSize)((int)firstBall.size + 1));
-			//ballsColliding.Remove(secondBall);
-			//ballsColliding.Remove(firstBall);
-			ballsCollisions.Clear();
-			firstBall.state = BallState.Falling;
-			secondBall.state = BallState.Falling;
-			firstBall.UnGhost();
-			secondBall.UnGhost();
-		}
-		print("Merge DONE");
 	}
 
 	bool DirectionCorrect(Direction _dir, Transform firstTransform, Transform secondTransform)
