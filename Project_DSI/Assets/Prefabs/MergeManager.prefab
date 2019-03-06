@@ -45,4 +45,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballsColliding: []
   mergeEndDistance: 0.5
-  mergeSpeed: 0.2
+  mergeSpeed: 0.1

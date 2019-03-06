@@ -36,21 +36,22 @@ public class MergeManager : MonoBehaviour
 	public void GetBallCollision(BallCollide firstBall, BallCollide secondBall)
 	{
 		print("Get ball collision");
-		if (!ballsColliding.Contains(firstBall) || !ballsColliding.Contains(secondBall))
-		{
+		//if (!ballsColliding.Contains(firstBall) || !ballsColliding.Contains(secondBall))
+		//{
 			if (DirectionCorrect(PlayerController.instance.direction, firstBall.self, secondBall.self))
 			{
 				AddBallsCollision(firstBall, secondBall);
 				ProcessCollisions();
+			CheckMergeDirection(firstBall, secondBall);
 			}
-		}
+		//}
 	}
 
 	void AddBallsCollision(BallCollide firstBall, BallCollide secondBall)
 	{
 		print("AddBallsCollision");
-		if (!ballsColliding.Contains(firstBall)) ballsColliding.Add(firstBall);
-		if (!ballsColliding.Contains(secondBall)) ballsColliding.Add(secondBall);
+		//if (!ballsColliding.Contains(firstBall)) ballsColliding.Add(firstBall);
+		//if (!ballsColliding.Contains(secondBall)) ballsColliding.Add(secondBall);
 		ballsCollisions.Add(new BallCollide[] { firstBall, secondBall });
 	}
 
@@ -59,20 +60,21 @@ public class MergeManager : MonoBehaviour
 		print("ProcessCollisions");
 		for (int i = 0; i < ballsCollisions.Count; i++)
 		{
-			CheckMergeDirection(ballsCollisions[i]);
+			//CheckMergeDirection(ballsCollisions[i]);
 		}
+		
 	}
 
-	void CheckMergeDirection(BallCollide[] _balls)
+	void CheckMergeDirection(/*BallCollide[] _balls*/  BallCollide first, BallCollide second)
 	{
 		print("CheckMergeDirection");
-		if (DirectionCorrect(PlayerController.instance.direction, _balls[0].self, _balls[1].self))
+		if (DirectionCorrect(PlayerController.instance.direction, first.self, second.self))
 		{
-			StartCoroutine(DoMerge(_balls[0], _balls[1]));
+			StartCoroutine(DoMerge(first, second));
 		}
 		else
 		{
-			StartCoroutine(DoMerge(_balls[1], _balls[0]));
+			StartCoroutine(DoMerge(second, first));
 		}
 	}
 
@@ -81,8 +83,8 @@ public class MergeManager : MonoBehaviour
 		print("DoMerge");
 		firstBall.state = BallState.Merging;
 		secondBall.state = BallState.Merging;
-		firstBall.body.isKinematic = true;
-		secondBall.body.isKinematic = true;
+		firstBall.Ghost();
+		secondBall.Ghost();
 		Vector3 secondInitPos = secondBall.self.position;
 		float counter = 0;
 		while(Vector3.Distance(firstBall.self.position, secondBall.self.position) > mergeEndDistance)
@@ -93,13 +95,21 @@ public class MergeManager : MonoBehaviour
 			print("Merging");
 		}
 		Destroy(secondBall.gameObject);
-		firstBall.ModifySize((BallSize)((int)firstBall.size + 1));
-		ballsColliding.Remove(secondBall);
-		ballsColliding.Remove(firstBall);
-		firstBall.state = BallState.Falling;
-		secondBall.state = BallState.Falling;
-		firstBall.body.isKinematic = false;
-		secondBall.body.isKinematic = false;
+		if (firstBall.size == BallSize.Big)
+		{
+			Destroy(firstBall.gameObject);
+		}
+		else
+		{
+			firstBall.ModifySize((BallSize)((int)firstBall.size + 1));
+			//ballsColliding.Remove(secondBall);
+			//ballsColliding.Remove(firstBall);
+			ballsCollisions.Clear();
+			firstBall.state = BallState.Falling;
+			secondBall.state = BallState.Falling;
+			firstBall.UnGhost();
+			secondBall.UnGhost();
+		}
 		print("Merge DONE");
 	}
 
