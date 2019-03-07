@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class ScoreManager : MonoBehaviour
 {
 	public static ScoreManager instance;
-
-	public GameObject scoreUI;
+	
 	public Image scoreBackground;
 	public Image scoreBar;
 	public GameObject particleAttractor;
+	public Transform barStart;
+	public Transform barEnd;
 	float score;
 	public float maxScore;
 
@@ -19,7 +20,7 @@ public class ScoreManager : MonoBehaviour
 	public AnimationCurve scaleCurve;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
 		#region Singleton
 		if (instance == null)
@@ -31,6 +32,7 @@ public class ScoreManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 		#endregion
+		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
 	}
 
 	// Update is called once per frame
@@ -51,6 +53,7 @@ public class ScoreManager : MonoBehaviour
 
 	IEnumerator UpdateScoreUI()
 	{
+		particleAttractor.transform.position = ConvertUIToWorld(Vector3.Lerp(barStart.position, barEnd.position, score / maxScore)); //ConvertUIToWorld(scoreBar.transform.position);
 		while ((score / maxScore) - scoreBar.fillAmount  > 0.01f)
 		{
 			scoreBar.fillAmount = Mathf.Lerp(scoreBar.fillAmount, (score / maxScore), scoreLerpSpeed );
@@ -58,11 +61,10 @@ public class ScoreManager : MonoBehaviour
 		}
 		scoreBar.fillAmount = score / maxScore;
 
-		particleAttractor.transform.position = ConvertUIToWorld(new Vector3(-231.1f, 243.5f, 0));
 	}
 
 	Vector3 ConvertUIToWorld(Vector3 _posUI)
 	{
-		return Camera.main.ViewportToWorldPoint(_posUI);
+		return Camera.main.ScreenToWorldPoint(_posUI);
 	}
 }
