@@ -59,6 +59,7 @@ public class BallCollide : MonoBehaviour
 
 	public GameObject plusOneParticle;
 	public GameObject plusTwoParticle;
+	public SpriteRenderer sprite;
 
 	float targetScale;
 	public bool dead;
@@ -299,16 +300,19 @@ public class BallCollide : MonoBehaviour
 		{
 			case BallSize.Small:
 				targetScale = CONSTANTS.instance.smallBallSize;
+				sprite.color = CONSTANTS.instance.smallColor;
 				StartCoroutine(Grow());
 				//self.localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
 				break;
 			case BallSize.Medium:
 				targetScale = CONSTANTS.instance.mediumBallSize;
+				sprite.color = CONSTANTS.instance.mediumColor;
 				StartCoroutine(Grow());
 				//self.localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
 				break;
 			case BallSize.Big:
 				targetScale = CONSTANTS.instance.bigBallSize;
+				sprite.color = CONSTANTS.instance.bigColor;
 				StartCoroutine(Grow());
 				//self.localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
 				break;
