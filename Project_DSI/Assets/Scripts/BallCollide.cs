@@ -47,14 +47,14 @@ public class BallCollide : MonoBehaviour
 
 	public bool obstacle;
 	public float explosionRadius = 1;
+	public float timeBeforeExplosion = 0.2f;
 	public float score = 15;
 
 	public AnimationCurve speedCurve;
 
 	public GameObject explosionParticle;
 
-	//public delegate void DeathEvent(BallCollide ball);
-	//public DeathEvent Death;
+	float targetScale;
 
     // Start is called before the first frame update
     void Start()
@@ -62,18 +62,6 @@ public class BallCollide : MonoBehaviour
 		PlayerController.instance.SwipeEnd += StartSwipe;
 		ModifySize(size);
 		col = GetComponent<Collider>();
-		//switch (size)
-		//{
-		//	case BallSize.Small:
-		//		self.GetChild(0).localScale = new Vector3(.5f, .5f, .5f);
-		//		break;
-		//	case BallSize.Medium:
-		//		self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
-		//		break;
-		//	case BallSize.Big:
-		//		self.GetChild(0).localScale = Vector3.one;
-		//		break;
-		//}
 		StartCoroutine(SpawnEffect());
 		switch (PlayerController.instance.direction)
 		{
@@ -234,40 +222,6 @@ public class BallCollide : MonoBehaviour
 				MergeManager.instance.GetBallCollision(this, ball);
 			}
 		}
-		//else if (state == BallState.Swiping)
-		//{
-		//	Vector3 _swipeDirection = (self.position - collision.contacts[0].point ).normalized;
-		//	switch (PlayerController.instance.direction)
-		//	{
-		//		case Direction.Left:
-		//			if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x < 0)
-		//			{
-		//				state = BallState.Falling;
-		//			}
-		//			break;
-		//		case Direction.Right:
-		//			if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x > 0)
-		//			{
-		//				state = BallState.Falling;
-		//			}
-		//			break;
-		//		case Direction.Up:
-		//			if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y > 0)
-		//			{
-		//				state = BallState.Falling;
-		//			}
-		//			break;
-		//		case Direction.Down:
-		//			if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y < 0)
-		//			{
-		//				state = BallState.Falling;
-		//			}
-		//			break;
-		//		default:
-		//			break;
-		//	}
-			
-		//}
 
 	}
 
@@ -324,15 +278,37 @@ public class BallCollide : MonoBehaviour
 		switch (size)
 		{
 			case BallSize.Small:
-				self.localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
+				targetScale = CONSTANTS.instance.smallBallSize;
+				StartCoroutine(Grow());
+				//self.localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
 				break;
 			case BallSize.Medium:
-				self.localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
+				targetScale = CONSTANTS.instance.mediumBallSize;
+				StartCoroutine(Grow());
+				//self.localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
 				break;
 			case BallSize.Big:
-				self.localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
+				targetScale = CONSTANTS.instance.bigBallSize;
+				StartCoroutine(Grow());
+				//self.localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
 				break;
 		}
+	}
+
+	IEnumerator Grow()
+	{
+		float currentScale = self.localScale.x;
+		while (targetScale - currentScale > 0.1f)
+		{
+			currentScale = Mathf.Lerp(currentScale, targetScale, 0.2f);
+			self.localScale = new Vector3(currentScale, currentScale, currentScale);
+			yield return null;
+		}
+		self.localScale = new Vector3(targetScale, targetScale, targetScale);
+		//for (int i = 0; i < length; i++)
+		//{
+		//	yield return null;
+		//}
 	}
 
 	public void Ghost()
@@ -349,6 +325,7 @@ public class BallCollide : MonoBehaviour
 
 	public void Die()
 	{
+		StopAllCoroutines();
 		if (size == BallSize.Big)
 		{
 			Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
@@ -367,6 +344,37 @@ public class BallCollide : MonoBehaviour
 		}
 		Destroy(gameObject);
 		ScoreManager.instance.AddScore(score);
+		GameManager.instance.TimeFreeze();
+
+		//StartCoroutine(Explode());
+	}
+
+	IEnumerator Explode()
+	{
+		gameObject.SetActive(false);
+		yield return new WaitForSeconds(timeBeforeExplosion);
+		if (size == BallSize.Big)
+		{
+			Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
+			//StartCoroutine(SpawnExplosion());
+			Collider[] toDie = Physics.OverlapSphere(self.position, explosionRadius);
+			if (toDie.Length > 0)
+			{
+				for (int i = 0; i < toDie.Length; i++)
+				{
+					if (toDie[i].gameObject.CompareTag("Ball"))
+					{
+						//toDie[i].GetComponent<BallCollide>().Die();
+						Destroy(toDie[i].gameObject);
+					}
+				}
+			}
+		}
+		Destroy(gameObject);
+		ScoreManager.instance.AddScore(score);
+		GameManager.instance.TimeFreeze();
 		//if (Death != null) Death(this);
+		print("About to explode");
+		print("Exploded");
 	}
 }

@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
 	void GetInput()
 	{
-
+		if (Time.timeScale <= 0) return;
 		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
 		{
 			swipePosBegin = Input.mousePosition;
