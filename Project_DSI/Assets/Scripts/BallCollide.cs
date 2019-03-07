@@ -58,11 +58,13 @@ public class BallCollide : MonoBehaviour
 	public GameObject scoreParticle;
 
 	float targetScale;
+	public bool dead;
 
     // Start is called before the first frame update
     void Start()
     {
 		PlayerController.instance.SwipeEnd += StartSwipe;
+		ScoreManager.instance.NewLevel += Die;
 		ModifySize(size);
 		col = GetComponent<Collider>();
 		StartCoroutine(SpawnEffect());
@@ -338,6 +340,9 @@ public class BallCollide : MonoBehaviour
 
 	public void Die()
 	{
+		ScoreManager.instance.NewLevel -= Die;
+		if (dead || !this.enabled || !gameObject.activeSelf) return;
+		dead = true;
 		StopAllCoroutines();
 		if (size == BallSize.Big)
 		{
@@ -356,6 +361,7 @@ public class BallCollide : MonoBehaviour
 			}
 			Instantiate(scoreParticle, self.position, Quaternion.identity);
 		}
+		gameObject.SetActive(false);
 		Destroy(gameObject);
 		ScoreManager.instance.AddScore(score);
 		//GameManager.instance.TimeFreeze();

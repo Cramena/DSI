@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class ScoreManager : MonoBehaviour
 {
 	public static ScoreManager instance;
+
+	int levelIndex = 1;
 	
 	public Image scoreBackground;
 	public Image scoreBar;
@@ -18,6 +20,9 @@ public class ScoreManager : MonoBehaviour
 	[Space()]
 	[Range(0, 1)] public float scoreLerpSpeed = 0.2f;
 	public AnimationCurve scaleCurve;
+
+	public delegate void NewLevelEvent();
+	public NewLevelEvent NewLevel;
 
     // Start is called before the first frame update
     void Awake()
@@ -37,18 +42,12 @@ public class ScoreManager : MonoBehaviour
 
 	}
 
-	// Update is called once per frame
-	void Update()
-    {
-        
-    }
-
 	public void AddScore(float _scoreAmount)
 	{
 		score += _scoreAmount;
 		if (score >= maxScore)
 		{
-			//End level
+			NextLevel();
 		}
 		StartCoroutine(UpdateScoreUI());
 	}
@@ -69,5 +68,16 @@ public class ScoreManager : MonoBehaviour
 	Vector3 ConvertUIToWorld(Vector3 _posUI)
 	{
 		return Camera.main.ScreenToWorldPoint(_posUI);
+	}
+
+	void NextLevel()
+	{
+		levelIndex++;
+		InitializeLevel();
+	}
+
+	void InitializeLevel()
+	{
+		if (NewLevel != null) NewLevel();
 	}
 }

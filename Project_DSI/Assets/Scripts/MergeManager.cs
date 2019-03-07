@@ -108,9 +108,10 @@ public class MergeManager : MonoBehaviour
 				break;
 			}
 		}
-		if (firstBall != null && secondBall != null)
+		if (firstBall != null && secondBall != null && !firstBall.dead && !secondBall.dead)
 		{
 			Destroy(secondBall.gameObject);
+			ScoreManager.instance.NewLevel -= secondBall.Die;
 			if (firstBall.size == BallSize.Big)
 			{
 				firstBall.Die();
