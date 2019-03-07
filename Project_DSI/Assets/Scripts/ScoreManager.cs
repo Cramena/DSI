@@ -11,6 +11,8 @@ public class ScoreManager : MonoBehaviour
 
 	int levelIndex = 1;
 
+	public Text currentLVLUI;
+	public Text nextLVLUI;
 	public GameObject nextLevel;
 	public Image scoreBackground;
 	public Image scoreBar;
@@ -44,7 +46,8 @@ public class ScoreManager : MonoBehaviour
 		#endregion
 		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
 		particleAttractor.transform.position = new Vector3(particleAttractor.transform.position.x, particleAttractor.transform.position.y, 0);
-
+		currentLVLUI.text = levelIndex.ToString();
+		nextLVLUI.text = (levelIndex + 1).ToString();
 	}
 
 	public void AddScore(float _scoreAmount)
@@ -96,7 +99,8 @@ public class ScoreManager : MonoBehaviour
 		yield return new WaitForSecondsRealtime(1.5f);
 		
 		PlayerController.instance.state = PlayerState.Default;
-
+		currentLVLUI.text = levelIndex.ToString();
+		nextLVLUI.text = (levelIndex + 1).ToString();
 		score = 0;
 		maxScore *= 1.2f;
 		scoreBar.fillAmount = 0;
