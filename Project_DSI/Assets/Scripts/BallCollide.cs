@@ -50,6 +50,8 @@ public class BallCollide : MonoBehaviour
 	public float timeBeforeExplosion = 0.2f;
 	public float score = 15;
 
+	public float growSpeed = 3;
+
 	public AnimationCurve speedCurve;
 
 	public GameObject explosionParticle;
@@ -85,13 +87,28 @@ public class BallCollide : MonoBehaviour
 	IEnumerator SpawnEffect()
 	{
 		float counter = 0.01f;
-		while (counter < 1)
+		float endScale = 0;
+		switch (size)
 		{
-			self.GetChild(0).localScale = new Vector3(counter, counter, counter);
-			yield return new WaitForFixedUpdate();
-			counter += Time.fixedDeltaTime * 2;
+			case BallSize.Small:
+				endScale = CONSTANTS.instance.smallBallSize;
+				break;
+			case BallSize.Medium:
+				endScale = CONSTANTS.instance.mediumBallSize;
+				break;
+			case BallSize.Big:
+				endScale = CONSTANTS.instance.bigBallSize;
+				break;
+			default:
+				break;
 		}
-		self.GetChild(0).localScale = Vector3.one;
+		while (counter < endScale)
+		{
+			self.localScale = new Vector3(counter, counter, counter);
+			yield return new WaitForFixedUpdate();
+			counter += Time.fixedDeltaTime * endScale * growSpeed;
+		}
+		self.localScale = new Vector3(endScale, endScale, endScale);
 	}
 
     // Update is called once per frame
@@ -344,7 +361,7 @@ public class BallCollide : MonoBehaviour
 		}
 		Destroy(gameObject);
 		ScoreManager.instance.AddScore(score);
-		GameManager.instance.TimeFreeze();
+		//GameManager.instance.TimeFreeze();
 
 		//StartCoroutine(Explode());
 	}
