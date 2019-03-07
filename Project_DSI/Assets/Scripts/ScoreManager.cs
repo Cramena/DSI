@@ -7,10 +7,15 @@ public class ScoreManager : MonoBehaviour
 {
 	public static ScoreManager instance;
 
+	public GameObject scoreUI;
 	public Image scoreBar;
 	public GameObject particleAttractor;
 	float score;
 	public float maxScore;
+
+	[Space()]
+	[Range(0, 1)] public float scoreLerpSpeed = 0.2f;
+	public AnimationCurve scaleCurve;
 
     // Start is called before the first frame update
     void Start()
@@ -40,11 +45,19 @@ public class ScoreManager : MonoBehaviour
 		{
 			//End level
 		}
-		UpdateScoreUI();
+		StartCoroutine(UpdateScoreUI());
 	}
 
-	void UpdateScoreUI()
+	IEnumerator UpdateScoreUI()
 	{
+
+		while ((score / maxScore) - scoreBar.fillAmount  > 0.01f)
+		{
+			//scoreUI.transform.localScale = scaleCurve.Evaluate()
+			scoreBar.fillAmount = Mathf.Lerp(scoreBar.fillAmount, (score / maxScore), scoreLerpSpeed );
+			yield return null;
+		}
 		scoreBar.fillAmount = score / maxScore;
+
 	}
 }
