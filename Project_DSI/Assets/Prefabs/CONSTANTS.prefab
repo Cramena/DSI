@@ -46,3 +46,6 @@ MonoBehaviour:
   smallBallSize: 0.3
   mediumBallSize: 0.5
   bigBallSize: 1
+  smallColor: {r: 0.3176471, g: 0.74881244, b: 1, a: 1}
+  mediumColor: {r: 1, g: 0.5921569, b: 0.43867922, a: 1}
+  bigColor: {r: 0.9718305, g: 0.4666667, b: 1, a: 1}

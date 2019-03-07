@@ -10,6 +10,10 @@ public class CONSTANTS : MonoBehaviour
 	public float mediumBallSize = 0.75f;
 	public float bigBallSize = 1f;
 
+	public Color smallColor;
+	public Color mediumColor;
+	public Color bigColor;
+
 	private void Awake()
 	{
 		#region Singleton

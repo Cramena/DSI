@@ -9,7 +9,7 @@ public class ScoreManager : MonoBehaviour
 
 	public List<BallCollide> balls = new List<BallCollide>();
 
-	int levelIndex = 1;
+	public int levelIndex = 1;
 
 	public Text currentLVLUI;
 	public Text nextLVLUI;
@@ -44,8 +44,13 @@ public class ScoreManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 		#endregion
+
+	}
+	private void Start()
+	{
 		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
 		particleAttractor.transform.position = new Vector3(particleAttractor.transform.position.x, particleAttractor.transform.position.y, 0);
+		levelIndex = SaveManager.instance.currentSave.level;
 		currentLVLUI.text = levelIndex.ToString();
 		nextLVLUI.text = (levelIndex + 1).ToString();
 	}
@@ -91,6 +96,8 @@ public class ScoreManager : MonoBehaviour
 			if (balls[i] != null)
 				balls[i].Die();
 		}
+		SaveManager.instance.currentSave.level = levelIndex;
+		SaveManager.instance.SaveGame();
 		StartCoroutine(InitializeLevel());
 	}
 
