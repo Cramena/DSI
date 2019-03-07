@@ -344,28 +344,55 @@ MonoBehaviour:
   size: 0
   myDirection: 0
   fallSpeed: 0.2
-  swipeSpeed: 10
+  swipeSpeed: 25
   swipeDuration: 0.15
   speedCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.0025197081
-      value: 1.0051346
-      inSlope: 0.020101048
-      outSlope: 0.020101048
+      time: 0.0037900023
+      value: 0.0025863647
+      inSlope: -0.26622945
+      outSlope: -0.26622945
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.16948253
+      outWeight: 0.1598493
     - serializedVersion: 3
-      time: 1.0000134
-      value: -0.0015096664
-      inSlope: -2.9918919
-      outSlope: -2.9918919
+      time: 0.10799571
+      value: 0.018805124
+      inSlope: -0.06289252
+      outSlope: -0.06289252
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.09231137
+      inWeight: 0.33333334
+      outWeight: 0.18574148
+    - serializedVersion: 3
+      time: 0.4696206
+      value: 0.9985364
+      inSlope: -0.08909836
+      outSlope: -0.08909836
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.06750152
+      outWeight: 0.13137756
+    - serializedVersion: 3
+      time: 0.835845
+      value: 0.011525759
+      inSlope: -0.042873167
+      outSlope: -0.042873167
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16819526
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.001234
+      value: 0.005539894
+      inSlope: 0.16363451
+      outSlope: 0.16363451
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.11510783
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
