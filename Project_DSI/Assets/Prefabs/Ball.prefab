@@ -413,6 +413,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   explosionParticle: {fileID: 863118582369393055, guid: dbfe1cb7edf641d4faa712c309063b04,
     type: 3}
+  scoreParticle: {fileID: 6884256627110989345, guid: 8517d19ce048991498e7dc0d9137d8a0,
+    type: 3}
 --- !u!135 &29
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -454,21 +456,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BubbleVisual00
-      objectReference: {fileID: 0}
-    - target: {fileID: 4997554120567934428, guid: 3c45b6de5a5f3e94db4d097472850cd9,
-        type: 3}
-      propertyPath: m_TagString
-      value: Metaball_liquid
-      objectReference: {fileID: 0}
-    - target: {fileID: 4997554120567934428, guid: 3c45b6de5a5f3e94db4d097472850cd9,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4997554120567934428, guid: 3c45b6de5a5f3e94db4d097472850cd9,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4997554120567663952, guid: 3c45b6de5a5f3e94db4d097472850cd9,
         type: 3}

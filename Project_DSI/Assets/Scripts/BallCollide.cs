@@ -55,6 +55,7 @@ public class BallCollide : MonoBehaviour
 	public AnimationCurve speedCurve;
 
 	public GameObject explosionParticle;
+	public GameObject scoreParticle;
 
 	float targetScale;
 
@@ -248,13 +249,11 @@ public class BallCollide : MonoBehaviour
 			(!collision.gameObject.CompareTag("Ball") || collision.gameObject.GetComponent<BallCollide>().obstacle)))
 		{
 			Vector3 _swipeDirection = (collision.contacts[0].point - self.position).normalized;
-			print("Swipe direction: "+ _swipeDirection + " and direction is " + PlayerController.instance.direction);
 			switch (PlayerController.instance.direction)
 			{
 				case Direction.Left:
 					if (Mathf.Abs(_swipeDirection.x) > Mathf.Abs(_swipeDirection.y) && _swipeDirection.x < 0)
 					{
-			print("Processing collision");
 						state = BallState.Falling;
 						obstacle = true;
 					}
@@ -262,7 +261,6 @@ public class BallCollide : MonoBehaviour
 				case Direction.Right:
 					if (Mathf.Abs(_swipeDirection.x) > Mathf.Abs(_swipeDirection.y) && _swipeDirection.x > 0)
 					{
-						print("Processing collision");
 						state = BallState.Falling;
 						obstacle = true;
 					}
@@ -271,7 +269,6 @@ public class BallCollide : MonoBehaviour
 					if (Mathf.Abs(_swipeDirection.y) > Mathf.Abs(_swipeDirection.x) && _swipeDirection.y > 0)
 					{
 						state = BallState.Falling;
-						print("Processing collision");
 						obstacle = true;
 					}
 					break;
@@ -279,7 +276,6 @@ public class BallCollide : MonoBehaviour
 					if (Mathf.Abs(_swipeDirection.y) > Mathf.Abs(_swipeDirection.x) && _swipeDirection.y < 0)
 					{
 						state = BallState.Falling;
-						print("Processing collision");
 						obstacle = true;
 					}
 					break;
@@ -358,6 +354,7 @@ public class BallCollide : MonoBehaviour
 					}
 				}
 			}
+			Instantiate(scoreParticle, self.position, Quaternion.identity);
 		}
 		Destroy(gameObject);
 		ScoreManager.instance.AddScore(score);
