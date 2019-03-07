@@ -346,6 +346,9 @@ MonoBehaviour:
   fallSpeed: 0.2
   swipeSpeed: 25
   swipeDuration: 0.15
+  obstacle: 0
+  explosionRadius: 1
+  score: 15
   speedCurve:
     serializedVersion: 2
     m_Curve:
@@ -397,7 +400,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  explosionParticle: {fileID: 5817274244306972308, guid: 9a4c153083077b249981570e6265fe3c,
+  explosionParticle: {fileID: 863118582369393055, guid: dbfe1cb7edf641d4faa712c309063b04,
     type: 3}
 --- !u!135 &29
 SphereCollider:
