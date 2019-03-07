@@ -45,7 +45,7 @@ public class BallCollide : MonoBehaviour
 	public float swipeDuration = 0.5f;
 	private float swipeTimer;
 
-	[System.NonSerialized] public bool obstacle;
+	public bool obstacle;
 
 	public AnimationCurve speedCurve;
 
@@ -103,6 +103,10 @@ public class BallCollide : MonoBehaviour
 		}
 		else
 		{
+			if (swipeTimer > 0)
+			{
+				swipeTimer -= Time.deltaTime;
+			}
 			body.velocity = dirVector * swipeSpeed;
 		}
 
@@ -136,11 +140,13 @@ public class BallCollide : MonoBehaviour
 
 	void StartSwipe(Direction _direction)
 	{
-		//if (state != BallState.Falling) return;
+		if (state != BallState.Falling) return;
 		if (GameManager.instance.ballSpawn == BallMoveMode.Simultaneous)
 		{
 			state = BallState.Swiping;
 			swipeTimer = swipeDuration;
+			obstacle = false;
+
 			switch (_direction)
 			{
 				case Direction.Left:
@@ -171,6 +177,8 @@ public class BallCollide : MonoBehaviour
 		yield return timeBefore;
 		if (this != null)
 		{
+			obstacle = false;
+
 			state = BallState.Swiping;
 			swipeTimer = swipeDuration;
 			switch (_direction)
@@ -204,41 +212,88 @@ public class BallCollide : MonoBehaviour
 				MergeManager.instance.GetBallCollision(this, ball);
 			}
 		}
-		else if (state == BallState.Swiping)
+		//else if (state == BallState.Swiping)
+		//{
+		//	Vector3 _swipeDirection = (self.position - collision.contacts[0].point ).normalized;
+		//	switch (PlayerController.instance.direction)
+		//	{
+		//		case Direction.Left:
+		//			if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x < 0)
+		//			{
+		//				state = BallState.Falling;
+		//			}
+		//			break;
+		//		case Direction.Right:
+		//			if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x > 0)
+		//			{
+		//				state = BallState.Falling;
+		//			}
+		//			break;
+		//		case Direction.Up:
+		//			if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y > 0)
+		//			{
+		//				state = BallState.Falling;
+		//			}
+		//			break;
+		//		case Direction.Down:
+		//			if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y < 0)
+		//			{
+		//				state = BallState.Falling;
+		//			}
+		//			break;
+		//		default:
+		//			break;
+		//	}
+			
+		//}
+
+	}
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		if ((state == BallState.Swiping && swipeTimer <= 0 &&
+			(!collision.gameObject.CompareTag("Ball") || collision.gameObject.GetComponent<BallCollide>().obstacle)))
 		{
-			Vector3 _swipeDirection = (self.position - collision.contacts[0].point ).normalized;
+			Vector3 _swipeDirection = (collision.contacts[0].point - self.position).normalized;
+			print("Swipe direction: "+ _swipeDirection + " and direction is " + PlayerController.instance.direction);
 			switch (PlayerController.instance.direction)
 			{
 				case Direction.Left:
-					if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x < 0)
+					if (Mathf.Abs(_swipeDirection.x) > Mathf.Abs(_swipeDirection.y) && _swipeDirection.x < 0)
 					{
+			print("Processing collision");
 						state = BallState.Falling;
+						obstacle = true;
 					}
 					break;
 				case Direction.Right:
-					if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x > 0)
+					if (Mathf.Abs(_swipeDirection.x) > Mathf.Abs(_swipeDirection.y) && _swipeDirection.x > 0)
 					{
+						print("Processing collision");
 						state = BallState.Falling;
+						obstacle = true;
 					}
 					break;
 				case Direction.Up:
-					if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y > 0)
+					if (Mathf.Abs(_swipeDirection.y) > Mathf.Abs(_swipeDirection.x) && _swipeDirection.y > 0)
 					{
 						state = BallState.Falling;
+						print("Processing collision");
+						obstacle = true;
 					}
 					break;
 				case Direction.Down:
-					if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y < 0)
+					if (Mathf.Abs(_swipeDirection.y) > Mathf.Abs(_swipeDirection.x) && _swipeDirection.y < 0)
 					{
 						state = BallState.Falling;
+						print("Processing collision");
+						obstacle = true;
 					}
 					break;
 				default:
 					break;
 			}
-			
 		}
-
 	}
 
 	public void ModifySize(BallSize _newSize)

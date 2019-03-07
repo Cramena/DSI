@@ -342,6 +342,7 @@ MonoBehaviour:
   body: {fileID: 24}
   state: 0
   size: 0
+  myDirection: 0
   fallSpeed: 0.2
   swipeSpeed: 10
   swipeDuration: 0.15
@@ -378,7 +379,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 60b9cb2ba6de33c4c94251d224386518, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
