@@ -4,10 +4,10 @@ using UnityEngine;
 
 public enum Direction
 {
-	Left,
-	Right,
+	Down,
 	Up,
-	Down
+	Left,
+	Right
 }
 
 public enum BallState
@@ -31,7 +31,7 @@ public class BallCollide : MonoBehaviour
 	Collider col;
 
 	//public Direction direction;
-	public BallState state;
+	public BallState state = BallState.Falling;
 	public BallSize size;
 	public Direction myDirection;
 
@@ -46,10 +46,15 @@ public class BallCollide : MonoBehaviour
 	private float swipeTimer;
 
 	public bool obstacle;
+	public float explosionRadius = 1;
+	public float score = 15;
 
 	public AnimationCurve speedCurve;
 
 	public GameObject explosionParticle;
+
+	//public delegate void DeathEvent(BallCollide ball);
+	//public DeathEvent Death;
 
     // Start is called before the first frame update
     void Start()
@@ -70,6 +75,23 @@ public class BallCollide : MonoBehaviour
 		//		break;
 		//}
 		StartCoroutine(SpawnEffect());
+		switch (PlayerController.instance.direction)
+		{
+			case Direction.Left:
+				dirVector = new Vector3(-1, 0, 0);
+				break;
+			case Direction.Right:
+				dirVector = new Vector3(1, 0, 0);
+				break;
+			case Direction.Up:
+				dirVector = new Vector3(0, 1, 0);
+				break;
+			case Direction.Down:
+				dirVector = new Vector3(0, -1, 0);
+				break;
+			default:
+				break;
+		}
 	}
 
 	IEnumerator SpawnEffect()
@@ -130,7 +152,7 @@ public class BallCollide : MonoBehaviour
 	void Fall()
 	{
 		if (body.isKinematic) body.isKinematic = false;
-		body.velocity = new Vector3(0, -fallSpeed, 0);
+		body.velocity = dirVector * fallSpeed;//new Vector3(0, -fallSpeed, 0);
 	}
 
 	void Swipe()
@@ -140,7 +162,7 @@ public class BallCollide : MonoBehaviour
 
 	void StartSwipe(Direction _direction)
 	{
-		if (state != BallState.Falling) return;
+		//if (state != BallState.Falling) return;
 		if (GameManager.instance.ballSpawn == BallMoveMode.Simultaneous)
 		{
 			state = BallState.Swiping;
@@ -327,7 +349,24 @@ public class BallCollide : MonoBehaviour
 
 	public void Die()
 	{
-		Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
+		if (size == BallSize.Big)
+		{
+			Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
+			Collider[] toDie = Physics.OverlapSphere(self.position, explosionRadius);
+			if (toDie.Length > 0)
+			{
+				for (int i = 0; i < toDie.Length; i++)
+				{
+					if (toDie[i].gameObject.CompareTag("Ball"))
+					{
+						//toDie[i].GetComponent<BallCollide>().Die();
+						Destroy(toDie[i].gameObject);
+					}
+				}
+			}
+		}
 		Destroy(gameObject);
+		ScoreManager.instance.AddScore(score);
+		//if (Death != null) Death(this);
 	}
 }

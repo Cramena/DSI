@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
 	public static PlayerController instance;
 
-	public Direction direction;
+	public Direction direction = Direction.Down;
 
 	//public UICharInfo
 	public delegate void SwipeEvent(Direction dir);
