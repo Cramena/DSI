@@ -33,6 +33,7 @@ public class BallCollide : MonoBehaviour
 	//public Direction direction;
 	public BallState state;
 	public BallSize size;
+	public Direction myDirection;
 
 	//public Material
 
@@ -43,6 +44,12 @@ public class BallCollide : MonoBehaviour
 
 	public float swipeDuration = 0.5f;
 	private float swipeTimer;
+
+	[System.NonSerialized] public bool obstacle;
+
+	public AnimationCurve speedCurve;
+
+	public GameObject explosionParticle;
 
     // Start is called before the first frame update
     void Start()
@@ -62,18 +69,41 @@ public class BallCollide : MonoBehaviour
 		//		self.GetChild(0).localScale = Vector3.one;
 		//		break;
 		//}
+		StartCoroutine(SpawnEffect());
+	}
+
+	IEnumerator SpawnEffect()
+	{
+		float counter = 0.01f;
+		while (counter < 1)
+		{
+			self.GetChild(0).localScale = new Vector3(counter, counter, counter);
+			yield return new WaitForFixedUpdate();
+			counter += Time.fixedDeltaTime * 2;
+		}
+		self.GetChild(0).localScale = Vector3.one;
 	}
 
     // Update is called once per frame
     void Update()
     {
-		if (swipeTimer > 0)
+
+		if (GameManager.instance.swipe == SwipeMode.OneByOne)
 		{
-			swipeTimer -= Time.deltaTime;
+			if (swipeTimer > 0)
+			{
+				swipeTimer -= Time.deltaTime;
+				body.velocity = dirVector * swipeSpeed * speedCurve.Evaluate(swipeTimer/swipeDuration);
+				print(body.velocity.magnitude);
+			}
+			else if (state == BallState.Swiping)
+			{
+				state = BallState.Falling;
+			}
 		}
-		else if (state == BallState.Swiping)
+		else
 		{
-			state = BallState.Falling;
+			body.velocity = dirVector * swipeSpeed;
 		}
 
 		switch (state)
@@ -95,34 +125,71 @@ public class BallCollide : MonoBehaviour
 
 	void Fall()
 	{
+		if (body.isKinematic) body.isKinematic = false;
 		body.velocity = new Vector3(0, -fallSpeed, 0);
 	}
 
 	void Swipe()
 	{
-		body.velocity = dirVector * swipeSpeed;
+		//body.velocity = dirVector * swipeSpeed;
 	}
 
 	void StartSwipe(Direction _direction)
 	{
-		state = BallState.Swiping;
-		swipeTimer = swipeDuration;
-		switch (_direction)
+		//if (state != BallState.Falling) return;
+		if (GameManager.instance.ballSpawn == BallMoveMode.Simultaneous)
 		{
-			case Direction.Left:
-				dirVector = new Vector3(-1, 0, 0);
-				break;
-			case Direction.Right:
-				dirVector = new Vector3(1, 0, 0);
-				break;
-			case Direction.Up:
-				dirVector = new Vector3(0, 1, 0);
-				break;
-			case Direction.Down:
-				dirVector = new Vector3(0, -1, 0);
-				break;
-			default:
-				break;
+			state = BallState.Swiping;
+			swipeTimer = swipeDuration;
+			switch (_direction)
+			{
+				case Direction.Left:
+					dirVector = new Vector3(-1, 0, 0);
+					break;
+				case Direction.Right:
+					dirVector = new Vector3(1, 0, 0);
+					break;
+				case Direction.Up:
+					dirVector = new Vector3(0, 1, 0);
+					break;
+				case Direction.Down:
+					dirVector = new Vector3(0, -1, 0);
+					break;
+				default:
+					break;
+			}
+		}
+		else
+		{
+			float randTime = Random.Range(0, 0.5f);
+			StartCoroutine(EnableSwipe(_direction, randTime));
+		}
+	}
+
+	IEnumerator EnableSwipe(Direction _direction, float timeBefore)
+	{
+		yield return timeBefore;
+		if (this != null)
+		{
+			state = BallState.Swiping;
+			swipeTimer = swipeDuration;
+			switch (_direction)
+			{
+				case Direction.Left:
+					dirVector = new Vector3(-1, 0, 0);
+					break;
+				case Direction.Right:
+					dirVector = new Vector3(1, 0, 0);
+					break;
+				case Direction.Up:
+					dirVector = new Vector3(0, 1, 0);
+					break;
+				case Direction.Down:
+					dirVector = new Vector3(0, -1, 0);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
@@ -135,29 +202,41 @@ public class BallCollide : MonoBehaviour
 			if (ball.size == size)
 			{
 				MergeManager.instance.GetBallCollision(this, ball);
-				//switch (size)
-				//{
-				//	case BallSize.Small:
-				//		MergeManager.instance.GetBallCollision(this, ball);
-				//		//ModifySize(BallSize.Medium);
-				//		//size = BallSize.Medium;
-				//		//self.GetChild(0).localScale = new Vector3(.75f, .75f, .75f);
-				//		break;
-				//	case BallSize.Medium:
-				//		MergeManager.instance.GetBallCollision(this, ball);
-				//		//ModifySize(BallSize.Big);
-				//		//size = BallSize.Big;
-				//		//self.GetChild(0).localScale = Vector3.one;
-				//		break;
-				//	case BallSize.Big:
-				//		Destroy(gameObject);
-				//		break;
-				//}
 			}
 		}
 		else if (state == BallState.Swiping)
 		{
-			state = BallState.Falling;
+			Vector3 _swipeDirection = (self.position - collision.contacts[0].point ).normalized;
+			switch (PlayerController.instance.direction)
+			{
+				case Direction.Left:
+					if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x < 0)
+					{
+						state = BallState.Falling;
+					}
+					break;
+				case Direction.Right:
+					if (_swipeDirection.x > _swipeDirection.y && _swipeDirection.x > 0)
+					{
+						state = BallState.Falling;
+					}
+					break;
+				case Direction.Up:
+					if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y > 0)
+					{
+						state = BallState.Falling;
+					}
+					break;
+				case Direction.Down:
+					if (_swipeDirection.y > _swipeDirection.x && _swipeDirection.y < 0)
+					{
+						state = BallState.Falling;
+					}
+					break;
+				default:
+					break;
+			}
+			
 		}
 
 	}
@@ -189,5 +268,11 @@ public class BallCollide : MonoBehaviour
 	{
 		body.isKinematic = false;
 		col.enabled = true;
+	}
+
+	public void Die()
+	{
+		Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
+		Destroy(gameObject);
 	}
 }

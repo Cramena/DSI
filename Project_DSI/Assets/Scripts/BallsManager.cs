@@ -5,25 +5,73 @@ using UnityEngine;
 public class BallsManager : MonoBehaviour
 {
 	public GameObject ballPrefab;
+	public int nbOfSpawnedBalls = 1;
+	public bool randomNumberOfSpawnedBalls;
+	public int minNbOfSpawnedBalls = 1;
+	public int maxNbOfSpawnedBalls = 1;
+
+	public float randomSpawnPosLateral = 1.5f;
 
     // Start is called before the first frame update
     void Start()
     {
 		PlayerController.instance.SwipeEnd += SpawnBall;
     }
-	
 
 	void SpawnBall(Direction dir)
 	{
-		int randomSpawnX = Random.Range(-2, 3);
+		if (randomNumberOfSpawnedBalls)
+		{
+			for (int i = 0; i < (int)Random.Range(minNbOfSpawnedBalls, maxNbOfSpawnedBalls+1); i++)
+			{
+				SpawnSingleBall(dir);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < nbOfSpawnedBalls; i++)
+			{
+				SpawnSingleBall(dir);
+			}
+		}
+
+	}
+
+	void SpawnSingleBall(Direction dir)
+	{
+
+		float Xpos = 0;
+		float Ypos = 0;
+
+		switch (dir)
+		{
+			case Direction.Left:
+				Ypos = Random.Range(5.25f, -3);
+				Xpos = Random.Range(2 - randomSpawnPosLateral, 2);
+				break;
+			case Direction.Right:
+				Ypos = Random.Range(5.25f, -3);
+				Xpos = Random.Range(-2, -2 + randomSpawnPosLateral);
+				break;
+			case Direction.Up:
+				Xpos = Random.Range(-2, 2);
+				Ypos = Random.Range(-3, -3 + randomSpawnPosLateral);
+				break;
+			case Direction.Down:
+				Xpos = Random.Range(-2, 2);
+				Ypos = Random.Range(5.25f - randomSpawnPosLateral, 5.25f);
+				break;
+			default:
+				break;
+		}
 		int randomColor = Random.Range(0, 3);
 
 		//print("Random spawn x: " + randomSpawnX);
 
 
-		Vector3 spawnPosition = new Vector3(randomSpawnX, 6, 0);
+		Vector3 spawnPosition = new Vector3(Xpos, Ypos, 0);
 		BallCollide ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity).GetComponent<BallCollide>();
-		ball.size = BallSize.Small;
-		//ball.size = (BallSize)randomColor;
+		//ball.size = BallSize.Small;
+		ball.size = (BallSize)randomColor;
 	}
 }

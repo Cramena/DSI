@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smallBallSize: 0.3
-  mediumBallSize: 0.45
-  bigBallSize: 0.6
+  mediumBallSize: 0.5
+  bigBallSize: 1
