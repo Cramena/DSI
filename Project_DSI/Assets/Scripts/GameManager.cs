@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
 		#endregion
 		swipe = SwipeMode.Unlimited;
 		Screen.orientation = ScreenOrientation.Portrait;
+		Application.targetFrameRate = 60;
 		DontDestroyOnLoad(gameObject);
     }
 

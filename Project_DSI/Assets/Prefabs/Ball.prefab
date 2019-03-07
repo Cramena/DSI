@@ -348,7 +348,9 @@ MonoBehaviour:
   swipeDuration: 0.15
   obstacle: 0
   explosionRadius: 1
+  timeBeforeExplosion: 0.2
   score: 15
+  growSpeed: 3
   speedCurve:
     serializedVersion: 2
     m_Curve:
@@ -452,6 +454,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BubbleVisual00
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997554120567934428, guid: 3c45b6de5a5f3e94db4d097472850cd9,
+        type: 3}
+      propertyPath: m_TagString
+      value: Metaball_liquid
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997554120567934428, guid: 3c45b6de5a5f3e94db4d097472850cd9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997554120567934428, guid: 3c45b6de5a5f3e94db4d097472850cd9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4997554120567663952, guid: 3c45b6de5a5f3e94db4d097472850cd9,
         type: 3}
