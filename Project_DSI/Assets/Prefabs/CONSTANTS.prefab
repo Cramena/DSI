@@ -43,9 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25780b4d917574843b5546cf6266ab4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smallBallSize: 1
+  mediumBallSize: 1.5
+  bigBallSize: 2
   smallColor: {r: 0.3176471, g: 0.74881244, b: 1, a: 1}
   mediumColor: {r: 1, g: 0.5921569, b: 0.43867922, a: 1}
   bigColor: {r: 0.9718305, g: 0.4666667, b: 1, a: 1}
-  bigBallSize: 1
-  mediumBallSize: 0.5
-  smallBallSize: 0.3
