@@ -8,6 +8,7 @@ public class ScoreManager : MonoBehaviour
 	public static ScoreManager instance;
 
 	public GameObject scoreUI;
+	public Image scoreBackground;
 	public Image scoreBar;
 	public GameObject particleAttractor;
 	float score;
@@ -50,14 +51,18 @@ public class ScoreManager : MonoBehaviour
 
 	IEnumerator UpdateScoreUI()
 	{
-
+		//float initialCounter = (score / maxScore) - scoreBar.fillAmount;
 		while ((score / maxScore) - scoreBar.fillAmount  > 0.01f)
 		{
-			//scoreUI.transform.localScale = scaleCurve.Evaluate()
+			//float counter = Mathf.Clamp(((score / maxScore) - scoreBar.fillAmount) / initialCounter, 0, 1);
+			//float currentScale = scaleCurve.Evaluate(counter);
+			//scoreBar.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
+			//scoreBackground.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
 			scoreBar.fillAmount = Mathf.Lerp(scoreBar.fillAmount, (score / maxScore), scoreLerpSpeed );
 			yield return null;
 		}
 		scoreBar.fillAmount = score / maxScore;
-
+		//scoreBar.transform.localScale = Vector3.one;
+		//scoreBackground.transform.localScale = Vector3.one;
 	}
 }

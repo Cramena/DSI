@@ -46,16 +46,16 @@ public class BallsManager : MonoBehaviour
 		switch (dir)
 		{
 			case Direction.Left:
-				Ypos = Random.Range(4.5f, -1f);
+				Ypos = Random.Range(4.5f, -2);
 				Xpos = Random.Range(1.4f - randomSpawnPosLateral, 1.4f);
 				break;
 			case Direction.Right:
-				Ypos = Random.Range(4.5f, -1f);
+				Ypos = Random.Range(4.5f, -2);
 				Xpos = Random.Range(-1.4f, -1.4f + randomSpawnPosLateral);
 				break;
 			case Direction.Up:
 				Xpos = Random.Range(-2, 2);
-				Ypos = Random.Range(-1f, -1f + randomSpawnPosLateral);
+				Ypos = Random.Range(-2, -2 + randomSpawnPosLateral);
 				break;
 			case Direction.Down:
 				Xpos = Random.Range(-2, 2);

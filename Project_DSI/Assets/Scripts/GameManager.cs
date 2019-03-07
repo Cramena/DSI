@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
 	public SwipeMode swipe = SwipeMode.Unlimited;
 	public BallMoveMode ballSpawn;
 
+	public int timeFreezeDuration = 2;
+	int timeFreezeTimer;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -65,5 +68,25 @@ public class GameManager : MonoBehaviour
 				ballSpawn = BallMoveMode.Randomized;
 			}
 		}
+		ManageTimeFreeze();
 	}
+
+	void ManageTimeFreeze()
+	{
+		if (timeFreezeTimer > 0)
+		{
+			timeFreezeTimer --;
+		}
+		else
+		{
+			Time.timeScale = 1;
+		}
+	}
+
+	public void TimeFreeze()
+	{
+		timeFreezeTimer = timeFreezeDuration;
+		Time.timeScale = 0;
+	}
+	
 }
