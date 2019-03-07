@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 863118582369393040}
   - component: {fileID: 863118582369393041}
   - component: {fileID: 863118582369393054}
+  - component: {fileID: 711518258199072795}
   m_Layer: 0
   m_Name: Particle System_BubbleExplode 1
   m_TagString: Untagged
@@ -4757,6 +4758,18 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &711518258199072795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863118582369393055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b24ff9dabbdff4294f0ae3ded9bcc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &863118582682624955
 GameObject:
   m_ObjectHideFlags: 0

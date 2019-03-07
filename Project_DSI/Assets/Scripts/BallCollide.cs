@@ -57,14 +57,19 @@ public class BallCollide : MonoBehaviour
 	public GameObject explosionParticle;
 	public GameObject scoreParticle;
 
+	public GameObject plusOneParticle;
+	public GameObject plusTwoParticle;
+
 	float targetScale;
 	public bool dead;
 
     // Start is called before the first frame update
     void Start()
     {
+		if (PlayerController.instance.state == PlayerState.CantPlay) gameObject.SetActive(false);
 		PlayerController.instance.SwipeEnd += StartSwipe;
-		ScoreManager.instance.NewLevel += Die;
+		//ScoreManager.instance.NewLevel += Die;
+		ScoreManager.instance.balls.Add(this);
 		ModifySize(size);
 		col = GetComponent<Collider>();
 		StartCoroutine(SpawnEffect());
@@ -340,14 +345,19 @@ public class BallCollide : MonoBehaviour
 
 	public void Die()
 	{
-		ScoreManager.instance.NewLevel -= Die;
+		//ScoreManager.instance.NewLevel -= Die;
+		ScoreManager.instance.balls.Remove(this);
+
 		if (dead || !this.enabled || !gameObject.activeSelf) return;
 		dead = true;
 		StopAllCoroutines();
 		if (size == BallSize.Big)
 		{
-			Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
+
+			Instantiate(plusTwoParticle, self.position, Quaternion.identity);
+			ScoreManager.instance.AddScore(score);
 			Collider[] toDie = Physics.OverlapSphere(self.position, explosionRadius);
+			Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
 			if (toDie.Length > 0)
 			{
 				for (int i = 0; i < toDie.Length; i++)
@@ -356,14 +366,25 @@ public class BallCollide : MonoBehaviour
 					{
 						//toDie[i].GetComponent<BallCollide>().Die();
 						Destroy(toDie[i].gameObject);
+						ScoreManager.instance.AddScore(score / 2);
+						Instantiate(plusOneParticle, toDie[i].transform.position, Quaternion.identity);
 					}
 				}
 			}
 			Instantiate(scoreParticle, self.position, Quaternion.identity);
 		}
-		gameObject.SetActive(false);
+		else
+		{
+			ScoreManager.instance.AddScore(score / 2);
+			Instantiate(plusOneParticle, self.position, Quaternion.identity);
+
+		}
+		//if (size == BallSize.Big)
+		//{
+		//}
+			gameObject.SetActive(false);
 		Destroy(gameObject);
-		ScoreManager.instance.AddScore(score);
+		//ScoreManager.instance.AddScore(score);
 		//GameManager.instance.TimeFreeze();
 
 		//StartCoroutine(Explode());
@@ -375,6 +396,7 @@ public class BallCollide : MonoBehaviour
 		yield return new WaitForSeconds(timeBeforeExplosion);
 		if (size == BallSize.Big)
 		{
+			ScoreManager.instance.AddScore(score);
 			Instantiate(explosionParticle, self.position, Quaternion.Euler(-90, 0, 0));
 			//StartCoroutine(SpawnExplosion());
 			Collider[] toDie = Physics.OverlapSphere(self.position, explosionRadius);
@@ -390,8 +412,8 @@ public class BallCollide : MonoBehaviour
 				}
 			}
 		}
+		
 		Destroy(gameObject);
-		ScoreManager.instance.AddScore(score);
 		GameManager.instance.TimeFreeze();
 		//if (Death != null) Death(this);
 		print("About to explode");

@@ -417,6 +417,10 @@ MonoBehaviour:
     type: 3}
   scoreParticle: {fileID: 6884256627110989345, guid: 8517d19ce048991498e7dc0d9137d8a0,
     type: 3}
+  plusOneParticle: {fileID: 1724326119471666818, guid: 70da379dd9715a943b32b3639eaf04bf,
+    type: 3}
+  plusTwoParticle: {fileID: 7267365523609536214, guid: bfc2aa2c9914db242abd7cb65023f4ad,
+    type: 3}
   dead: 0
 --- !u!135 &29
 SphereCollider:
