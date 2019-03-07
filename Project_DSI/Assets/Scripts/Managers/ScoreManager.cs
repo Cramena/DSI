@@ -33,6 +33,8 @@ public class ScoreManager : MonoBehaviour
 		}
 		#endregion
 		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
+		particleAttractor.transform.position = new Vector3(particleAttractor.transform.position.x, particleAttractor.transform.position.y, 0);
+
 	}
 
 	// Update is called once per frame
@@ -54,6 +56,7 @@ public class ScoreManager : MonoBehaviour
 	IEnumerator UpdateScoreUI()
 	{
 		particleAttractor.transform.position = ConvertUIToWorld(Vector3.Lerp(barStart.position, barEnd.position, score / maxScore)); //ConvertUIToWorld(scoreBar.transform.position);
+		particleAttractor.transform.position = new Vector3(particleAttractor.transform.position.x, particleAttractor.transform.position.y, 0);
 		while ((score / maxScore) - scoreBar.fillAmount  > 0.01f)
 		{
 			scoreBar.fillAmount = Mathf.Lerp(scoreBar.fillAmount, (score / maxScore), scoreLerpSpeed );
