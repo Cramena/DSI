@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25780b4d917574843b5546cf6266ab4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smallBallSize: 0.3
-  mediumBallSize: 0.5
-  bigBallSize: 1
+  smallBallSize: 1
+  mediumBallSize: 1.5
+  bigBallSize: 2
