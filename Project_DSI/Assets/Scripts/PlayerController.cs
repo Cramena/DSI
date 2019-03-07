@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 //using UnityEngine.Events;
 
+public enum PlayerState
+{
+	Default,
+	CantPlay
+}
+
 public class PlayerController : MonoBehaviour
 {
 	public static PlayerController instance;
 
 	public Direction direction = Direction.Down;
+	public PlayerState state = PlayerState.CantPlay;
 
 	//public UICharInfo
 	public delegate void SwipeEvent(Direction dir);
@@ -40,7 +47,7 @@ public class PlayerController : MonoBehaviour
 
 	void GetInput()
 	{
-		if (Time.timeScale <= 0) return;
+		if (Time.timeScale <= 0  || state == PlayerState.CantPlay) return;
 		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
 		{
 			swipePosBegin = Input.mousePosition;

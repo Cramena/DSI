@@ -7,13 +7,17 @@ public class ScoreManager : MonoBehaviour
 {
 	public static ScoreManager instance;
 
+	public List<BallCollide> balls = new List<BallCollide>();
+
 	int levelIndex = 1;
-	
+
+	public GameObject nextLevel;
 	public Image scoreBackground;
 	public Image scoreBar;
 	public GameObject particleAttractor;
 	public Transform barStart;
 	public Transform barEnd;
+	
 	float score;
 	public float maxScore;
 
@@ -23,6 +27,7 @@ public class ScoreManager : MonoBehaviour
 
 	public delegate void NewLevelEvent();
 	public NewLevelEvent NewLevel;
+	bool transition;
 
     // Start is called before the first frame update
     void Awake()
@@ -72,12 +77,32 @@ public class ScoreManager : MonoBehaviour
 
 	void NextLevel()
 	{
+		if (transition) return;
+		transition = true;
+		PlayerController.instance.state = PlayerState.CantPlay;
+
+		Instantiate(nextLevel, new Vector3(0, 5f, 0), Quaternion.identity);
 		levelIndex++;
-		InitializeLevel();
+		for (int i = 0; i < balls.Count; i++)
+		{
+			if (balls[i] != null)
+				balls[i].Die();
+		}
+		StartCoroutine(InitializeLevel());
 	}
 
-	void InitializeLevel()
+	IEnumerator InitializeLevel()
 	{
-		if (NewLevel != null) NewLevel();
+		yield return new WaitForSecondsRealtime(1.5f);
+		
+		PlayerController.instance.state = PlayerState.Default;
+
+		score = 0;
+		maxScore *= 1.2f;
+		scoreBar.fillAmount = 0;
+		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
+		particleAttractor.transform.position = new Vector3(particleAttractor.transform.position.x, particleAttractor.transform.position.y, 0);
+		transition = false;
+		//if (NewLevel != null) NewLevel();
 	}
 }
