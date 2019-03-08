@@ -31,6 +31,9 @@ public class ScoreManager : MonoBehaviour
 	public NewLevelEvent NewLevel;
 	bool transition;
 
+	public float maxBallsSize = 18;
+	public float ballsSize;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -44,8 +47,10 @@ public class ScoreManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 		#endregion
-
+		PlayerController.instance.SwipeEnd += CheckLose;
 	}
+
+
 	private void Start()
 	{
 		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
@@ -53,6 +58,34 @@ public class ScoreManager : MonoBehaviour
 		levelIndex = SaveManager.instance.currentSave.level;
 		currentLVLUI.text = levelIndex.ToString();
 		nextLVLUI.text = (levelIndex + 1).ToString();
+	}
+
+	void CheckLose (Direction dir)
+	{
+		ballsSize = 0;
+		for (int i = 0; i < balls.Count; i++)
+		{
+			if (balls[i] != null) ballsSize += balls[i].self.localScale.x;
+		}
+		if (ballsSize > maxBallsSize)
+		{
+			Lose();
+		}
+	}
+
+	void Lose()
+	{
+		if (transition) return;
+		print("Lose!");
+		transition = true;
+		PlayerController.instance.state = PlayerState.CantPlay;
+		
+		for (int i = 0; i < balls.Count; i++)
+		{
+			if (balls[i] != null)
+				balls[i].Die();
+		}
+		StartCoroutine(InitializeLevel());
 	}
 
 	public void AddScore(float _scoreAmount)
@@ -91,6 +124,8 @@ public class ScoreManager : MonoBehaviour
 
 		Instantiate(nextLevel, new Vector3(0, 5f, 0), Quaternion.identity);
 		levelIndex++;
+		maxScore *= 1.2f;
+
 		for (int i = 0; i < balls.Count; i++)
 		{
 			if (balls[i] != null)
@@ -109,7 +144,6 @@ public class ScoreManager : MonoBehaviour
 		currentLVLUI.text = levelIndex.ToString();
 		nextLVLUI.text = (levelIndex + 1).ToString();
 		score = 0;
-		maxScore *= 1.2f;
 		scoreBar.fillAmount = 0;
 		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
 		particleAttractor.transform.position = new Vector3(particleAttractor.transform.position.x, particleAttractor.transform.position.y, 0);

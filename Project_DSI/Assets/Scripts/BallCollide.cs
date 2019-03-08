@@ -73,7 +73,7 @@ public class BallCollide : MonoBehaviour
 		ScoreManager.instance.balls.Add(this);
 		ModifySize(size);
 		col = GetComponent<Collider>();
-		StartCoroutine(SpawnEffect());
+		if (gameObject.activeSelf) StartCoroutine(SpawnEffect());
 		switch (PlayerController.instance.direction)
 		{
 			case Direction.Left:
@@ -301,19 +301,19 @@ public class BallCollide : MonoBehaviour
 			case BallSize.Small:
 				targetScale = CONSTANTS.instance.smallBallSize;
 				sprite.color = CONSTANTS.instance.smallColor;
-				StartCoroutine(Grow());
+				if (gameObject.activeSelf) StartCoroutine(Grow());
 				//self.localScale = new Vector3(CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize, CONSTANTS.instance.smallBallSize);
 				break;
 			case BallSize.Medium:
 				targetScale = CONSTANTS.instance.mediumBallSize;
 				sprite.color = CONSTANTS.instance.mediumColor;
-				StartCoroutine(Grow());
+				if (gameObject.activeSelf) StartCoroutine(Grow());
 				//self.localScale = new Vector3(CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize, CONSTANTS.instance.mediumBallSize);
 				break;
 			case BallSize.Big:
 				targetScale = CONSTANTS.instance.bigBallSize;
 				sprite.color = CONSTANTS.instance.bigColor;
-				StartCoroutine(Grow());
+				if (gameObject.activeSelf) StartCoroutine(Grow());
 				//self.localScale = new Vector3(CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize, CONSTANTS.instance.bigBallSize);
 				break;
 		}
