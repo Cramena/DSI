@@ -11,6 +11,7 @@ public class ScoreManager : MonoBehaviour
 
 	public int levelIndex = 1;
 
+	public Text loseText;
 	public Text currentLVLUI;
 	public Text nextLVLUI;
 	public GameObject nextLevel;
@@ -33,6 +34,7 @@ public class ScoreManager : MonoBehaviour
 
 	public float maxBallsSize = 18;
 	public float ballsSize;
+	bool aboutToCheck;
 
     // Start is called before the first frame update
     void Awake()
@@ -47,21 +49,42 @@ public class ScoreManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 		#endregion
-		PlayerController.instance.SwipeEnd += CheckLose;
 	}
 
 
 	private void Start()
 	{
+		PlayerController.instance.SwipeEnd += CheckLose;
 		particleAttractor.transform.position = ConvertUIToWorld(barStart.position);
 		particleAttractor.transform.position = new Vector3(particleAttractor.transform.position.x, particleAttractor.transform.position.y, 0);
-		levelIndex = SaveManager.instance.currentSave.level;
+		//levelIndex = SaveManager.instance.currentSave.level;
 		currentLVLUI.text = levelIndex.ToString();
 		nextLVLUI.text = (levelIndex + 1).ToString();
+		loseText.text = "";
 	}
 
-	void CheckLose (Direction dir)
+	//private void Update()
+	//{
+	//	CheckLose(Direction.Down);
+	//}
+
+	public void CheckLose (Direction dir)
 	{
+		if (aboutToCheck)
+		{
+			aboutToCheck = false;
+			CheckLoseNow();
+		}
+		else
+		{
+			aboutToCheck = true;
+			StartCoroutine(WaitCheckLose());
+		}
+	}
+
+	void CheckLoseNow()
+	{
+		StopCoroutine(WaitCheckLose());
 		ballsSize = 0;
 		for (int i = 0; i < balls.Count; i++)
 		{
@@ -73,10 +96,36 @@ public class ScoreManager : MonoBehaviour
 		}
 	}
 
+	IEnumerator WaitCheckLose()
+	{
+		yield return new WaitForSecondsRealtime(0.75f);
+		aboutToCheck = false;
+		ballsSize = 0;
+		for (int i = 0; i < balls.Count; i++)
+		{
+			if (balls[i] != null) ballsSize += balls[i].self.localScale.x;
+		}
+		if (ballsSize > maxBallsSize - 5)
+		{
+			loseText.text = "WARNING: TOO MANY BUBBLES";
+			loseText.fontSize = 50;
+		}
+		else if (ballsSize > maxBallsSize)
+		{
+			Lose();
+		}
+		else if (!transition)
+		{
+			loseText.text = "";
+		}
+	}
+
 	void Lose()
 	{
 		if (transition) return;
 		print("Lose!");
+		loseText.text = "YOU LOSE!";
+		loseText.fontSize = 70;
 		transition = true;
 		PlayerController.instance.state = PlayerState.CantPlay;
 		
@@ -139,7 +188,7 @@ public class ScoreManager : MonoBehaviour
 	IEnumerator InitializeLevel()
 	{
 		yield return new WaitForSecondsRealtime(1.5f);
-		
+		loseText.text = "";
 		PlayerController.instance.state = PlayerState.Default;
 		currentLVLUI.text = levelIndex.ToString();
 		nextLVLUI.text = (levelIndex + 1).ToString();

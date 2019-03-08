@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 	//public UICharInfo
 	public delegate void SwipeEvent(Direction dir);
 	public SwipeEvent SwipeEnd;
+	public SwipeEvent SwipeAfterEnd;
 
 	Vector3 swipePosBegin;
 	Vector3 swipePosEnd;
@@ -109,5 +110,7 @@ public class PlayerController : MonoBehaviour
 			SwipeEnd(direction);
 		}
 		//return direction;
+
+		if (SwipeAfterEnd != null) SwipeAfterEnd(direction);
 	}
 }

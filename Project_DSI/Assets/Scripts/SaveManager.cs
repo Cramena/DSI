@@ -41,6 +41,7 @@ public class SaveManager : MonoBehaviour
 		{
 			InitializeSave();
 		}
+		//ScoreManager.instance.levelIndex = currentSave.level;
     }
 	
 

@@ -123,7 +123,10 @@ public class BallCollide : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+		if (self.position.magnitude > 6)
+		{
+			Destroy(gameObject);
+		}
 		if (GameManager.instance.swipe == SwipeMode.OneByOne)
 		{
 			if (swipeTimer > 0)
