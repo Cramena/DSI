@@ -73,14 +73,15 @@ public class ScoreManager : MonoBehaviour
 		if (aboutToCheck)
 		{
 			aboutToCheck = false;
+			//StartCoroutine(WaitCheckLose());
 			CheckLoseNow();
 		}
 		else
 		{
 			aboutToCheck = true;
 			StartCoroutine(WaitCheckLose());
-		}
 	}
+}
 
 	void CheckLoseNow()
 	{
@@ -105,14 +106,14 @@ public class ScoreManager : MonoBehaviour
 		{
 			if (balls[i] != null) ballsSize += balls[i].self.localScale.x;
 		}
-		if (ballsSize > maxBallsSize - 5)
+		if (ballsSize > maxBallsSize)
+		{
+			Lose();
+		}
+		else if (ballsSize > maxBallsSize - 5)
 		{
 			loseText.text = "WARNING: TOO MANY BUBBLES";
 			loseText.fontSize = 50;
-		}
-		else if (ballsSize > maxBallsSize)
-		{
-			Lose();
 		}
 		else if (!transition)
 		{
